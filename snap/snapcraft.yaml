@@ -1,0 +1,61 @@
+name: vnstat
+title: vnStat
+base: core22
+adopt-info: vnstat
+website: https://humdi.net/vnstat/
+source-code: https://github.com/vergoh/vnstat
+issues: https://github.com/vergoh/vnstat-snap/issues
+license: GPL-2.0
+summary: Console-based network traffic monitor
+description: |
+  vnStat is a console-based network traffic monitor that uses the network
+  interface statistics provided by the kernel as information source. This
+  means that vnStat won't actually be sniffing any traffic and also ensures
+  light use of system resources regardless of network traffic rate.
+
+  Once installed, this snap needs to be connected for full functionality:
+
+     sudo snap connect vnstat:network-observe
+
+  For more details, see: https://humdi.net/vnstat/
+
+grade: devel
+confinement: strict
+
+apps:
+  vnstat:
+    command: usr/bin/vnstat
+  image: # results in vnstat.image
+    command: usr/bin/vnstati
+  daemon: # results in vnstat.daemon
+    command: usr/sbin/vnstatd -n
+    daemon: simple
+    plugs: [network-observe]
+    restart-delay: 10s
+    restart-condition: on-failure
+    stop-mode: sigterm
+    stop-timeout: 10s
+
+layout:
+  /var/lib/vnstat:
+    bind: $SNAP_DATA/var/lib/vnstat
+
+parts:
+  vnstat:
+    plugin: autotools
+    source: https://github.com/vergoh/vnstat
+    source-type: git
+    source-branch: master
+    autotools-configure-parameters:
+      - --prefix=/usr
+      - --sysconfdir=/etc
+    override-pull: |
+      snapcraftctl pull
+      snapcraftctl set-version "$(git describe --tags --long)"
+    build-packages:
+      - pkg-config
+      - libsqlite3-dev
+      - libgd-dev
+    stage-packages:
+      - libsqlite3-0
+      - libgd3
