@@ -2,6 +2,7 @@ name: vnstat
 title: vnStat
 base: core22
 adopt-info: vnstat
+icon: vnstat.png
 website: https://humdi.net/vnstat/
 source-code: https://github.com/vergoh/vnstat
 issues: https://github.com/vergoh/vnstat-snap/issues
