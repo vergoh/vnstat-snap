@@ -1,7 +1,7 @@
-# vnStat in a snap - Work in Progress
+# vnStat in a snap - Experimental
 
-**Note!** This is a work in progress and likely not the best way to install
-vnStat currently. See at least the limitation section below.
+**Note!** This snap should be considered experimental and isn't likely
+the best way to install vnStat currently. See at least the limitations section below.
 
 vnStat is a network traffic monitor that uses the network
 interface statistics provided by the kernel as information source. This

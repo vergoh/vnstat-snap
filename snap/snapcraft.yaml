@@ -17,8 +17,10 @@ description: |
   Once installed, this snap needs to be connected for full functionality:
 
      sudo snap connect vnstat:network-observe
+     sudo snap restart vnstat
 
-  For more details, see: https://humdi.net/vnstat/
+  Note: This snap should currently be considered experimental. For more details
+  see https://github.com/vergoh/vnstat-snap
 
 grade: stable
 confinement: strict
