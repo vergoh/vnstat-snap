@@ -50,8 +50,8 @@ parts:
       - --prefix=/usr
       - --sysconfdir=/etc
     override-pull: |
-      snapcraftctl pull
-      snapcraftctl set-version "$(git describe --tags --long)"
+      craftctl default
+      craftctl set version="$(git describe --tags --long)"
     build-packages:
       - pkg-config
       - libsqlite3-dev
