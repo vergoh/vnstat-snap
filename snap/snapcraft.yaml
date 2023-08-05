@@ -20,7 +20,7 @@ description: |
 
   For more details, see: https://humdi.net/vnstat/
 
-grade: devel
+grade: stable
 confinement: strict
 
 apps:
