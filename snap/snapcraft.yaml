@@ -35,6 +35,7 @@ architectures:
 apps:
   vnstat:
     command: usr/bin/vnstat
+    plugs: [network-observe]
   image: # results in vnstat.image
     command: usr/bin/vnstati
   daemon: # results in vnstat.daemon

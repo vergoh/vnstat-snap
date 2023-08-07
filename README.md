@@ -1,4 +1,4 @@
-# vnStat in a snap - Experimental
+# vnStat in a snap (experimental)
 
 **Note!** This snap should be considered experimental and isn't likely
 the best way to install vnStat currently. See at least the limitations section below.
