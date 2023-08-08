@@ -1,0 +1,42 @@
+name: edge
+
+on:
+  push:
+    branches:
+      - 'master'
+  workflow_dispatch:
+
+jobs:
+  trigger:
+    runs-one: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup git
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "git@humdi.net"
+          git remote add deploy git+ssh://vergo@git.launchpad.net/~vergo/+git/vnstat-snap
+
+      - name: Setup ssh
+        uses: webfactory/ssh-agent@v0.8.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Ssh-keyscan Launchpad
+        run: ssh-key-scan -t rsa -H git.launchpad.net >~/.ssh/known_hosts
+
+      - name: Setup changes
+        shell: bash
+        run: |
+          git checkout -b edge
+          echo "# timestamp: $(date +"%F %X")" >>snap/snapcraft.yaml
+          git diff
+          git commit -a -m "GitHub $GITHUB_REPOSITORY $GITHUB_WORKFLOW #$GITHUB_RUN_NUMBER"
+
+      - name: Push changes
+        run: |
+          git push deploy edge --force
