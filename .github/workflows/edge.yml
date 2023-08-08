@@ -26,8 +26,10 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: Ssh-keyscan Launchpad
-        run: ssh-key-scan -t rsa -H git.launchpad.net >~/.ssh/known_hosts
+      - name: Setup git.launchpad.net as known host
+        env:
+          GIT_LAUNCHPAD_HOST: ${{ secrets.GIT_LAUNCHPAD_NET_SSH }}
+        run: echo "$GIT_LAUNCHPAD_HOST" >>~/.ssh/known_hosts
 
       - name: Setup changes
         shell: bash
