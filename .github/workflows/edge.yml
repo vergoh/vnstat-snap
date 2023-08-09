@@ -40,6 +40,15 @@ jobs:
           git diff
           git commit -a -m "GitHub $GITHUB_REPOSITORY $GITHUB_WORKFLOW #$GITHUB_RUN_NUMBER"
 
+      - name: Build test
+        uses: snapcore/action-build@v1
+        id: snapcraft
+
+      - name: Install test
+        run: |
+          sudo snap install --dangerous ${{ steps.snapcraft.outputs.snap }}
+          vnstat --version
+
       - name: Push changes
         run: |
           git push deploy edge --force
