@@ -1,0 +1,44 @@
+#!/bin/sh
+
+CFG_DIR="$SNAP_DATA/options"
+CFG_FILE="$CFG_DIR/config"
+LOCKED="^DatabaseDir |^DaemonGroup |^DaemonUser |^LogFile |^PidFile "
+
+# new install, no existing configuration -> generate it and populate also key/values in snap
+if [ ! -d "$CFG_DIR" ] || [ ! -f "$CFG_FILE" ]; then
+    mkdir -m 0755 -p "$CFG_DIR"
+    touch "$CFG_FILE"
+    chmod 644 "$CFG_FILE"
+    vnstat --showconfig | sed -e 's:^;::g' -e 's:  *: :g' | grep -E '^[A-Za-z]' | grep -v -E "$LOCKED" | sort | while read cfgline
+    do
+        native_key=$(echo "$cfgline" | cut -d" " -f1)
+        snap_key=$(echo "$native_key" | tr A-Z a-z)
+        value=$(echo "$cfgline" | cut -d" " -f2- | sed 's:\"::g')
+        echo "$native_key \"$value\"" >>"$CFG_FILE"
+        snapctl set $snap_key="$value"
+    done
+
+# configuration exists so this is either snap refresh / update or user using snap set/unset,
+# snap doesn't indicate in any way which one it is so in all cases regenerate the configuration
+# using values from snap when available and push key/values to snap when missing, ignore possible
+# keys that don't belong to vnStat, users can use 'vnstat --showconfig' to see the active configuration
+else
+    CFG_NEW="$CFG_DIR/config_new"
+    rm -f "$CFG_NEW"
+    vnstat --config "$CFG_FILE" --showconfig | sed -e 's:^;::g' -e 's:  *: :g' | grep -E '^[A-Za-z]' | grep -v -E "$LOCKED" | sort | while read cfgline
+    do
+        native_key=$(echo "$cfgline" | cut -d" " -f1)
+        native_value=$(echo "$cfgline" | cut -d" " -f2- | sed 's:\"::g')
+        snap_key=$(echo "$native_key" | tr A-Z a-z)
+        snap_value=$(snapctl get $snap_key)
+        if [ -z "$snap_value" ]; then
+            snapctl set $snap_key="$native_value"
+            snap_value="$native_value"
+        fi
+        echo "$native_key \"$snap_value\"" >>"$CFG_NEW"
+    done
+    if ! diff -Naur "$CFG_FILE" "$CFG_NEW"; then
+        cat "$CFG_NEW" >"$CFG_FILE"
+    fi
+    rm -f "$CFG_NEW"
+fi

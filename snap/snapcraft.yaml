@@ -19,8 +19,7 @@ description: |
      sudo snap connect vnstat:network-observe
      sudo snap restart vnstat
 
-  Note: This snap should currently be considered experimental. For more details
-  see https://github.com/vergoh/vnstat-snap
+  For more information see https://github.com/vergoh/vnstat-snap
 
 grade: stable
 confinement: strict
@@ -34,12 +33,12 @@ architectures:
 
 apps:
   vnstat:
-    command: usr/bin/vnstat
+    command: usr/bin/vnstat --config $SNAP_DATA/options/config
     plugs: [network-observe]
   image: # results in vnstat.image
-    command: usr/bin/vnstati
+    command: usr/bin/vnstati --config $SNAP_DATA/options/config
   daemon: # results in vnstat.daemon
-    command: usr/sbin/vnstatd -n
+    command: usr/sbin/vnstatd --config $SNAP_DATA/options/config -n
     daemon: simple
     plugs: [network-observe]
     restart-delay: 10s
