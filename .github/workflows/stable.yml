@@ -35,12 +35,16 @@ jobs:
         run: |
           echo "VNSTAT_RELEASE_TAG=$(git ls-remote --refs --tags --sort=version:refname https://github.com/vergoh/vnstat | grep "refs/tags/v" | tail -n 1 | cut -d/ -f3)" >>$GITHUB_ENV
 
+      - name: Discover current snap commit
+        run: |
+          echo "SNAP_COMMIT=$(git rev-parse --short=1 "$GITHUB_SHA")" >>$GITHUB_ENV
+
       - name: Setup build details for stable
         shell: bash
         run: |
           git checkout -b stable
           sed -i -e "s/source-branch:.*/source-tag: $VNSTAT_RELEASE_TAG/g" snap/snapcraft.yaml
-          sed -i -e 's:describe --tags --long:describe --tags:g' snap/snapcraft.yaml
+          sed -i -e "s:--tags --long):--tags)-$SNAP_COMMIT:g" snap/snapcraft.yaml
           echo "# timestamp: $(date +"%F %X")" >>snap/snapcraft.yaml
           git diff
           git commit -a -m "GitHub $GITHUB_REPOSITORY $GITHUB_WORKFLOW #$GITHUB_RUN_NUMBER"

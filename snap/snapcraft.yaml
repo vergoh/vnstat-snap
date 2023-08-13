@@ -61,7 +61,7 @@ parts:
       - --sysconfdir=/etc
     override-pull: |
       craftctl default
-      craftctl set version="$(git describe --tags --long)"
+      craftctl set version="$(git describe --abbrev=1 --tags --long)"
     build-packages:
       - pkg-config
       - libsqlite3-dev
