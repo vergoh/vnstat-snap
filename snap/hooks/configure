@@ -25,7 +25,10 @@ if [ ! -d "$CFG_DIR" ] || [ ! -f "$CFG_FILE" ]; then
 else
     CFG_NEW="$CFG_DIR/config_new"
     rm -f "$CFG_NEW"
-    vnstat --config "$CFG_FILE" --showconfig | sed -e 's:^;::g' -e 's:  *: :g' | grep -E '^[A-Za-z]' | grep -v -E "$LOCKED" | sort | while read cfgline
+    # --config paramter shouldn't be used here, that way the native_value variable gets the default value
+    # which can then be restored to snap if the user used "snap unset" for a certain value, otherwise
+    # the previously used value would get restored and "snap unset" wouldn't have any effect
+    vnstat --showconfig | sed -e 's:^;::g' -e 's:  *: :g' | grep -E '^[A-Za-z]' | grep -v -E "$LOCKED" | sort | while read cfgline
     do
         native_key=$(echo "$cfgline" | cut -d" " -f1)
         native_value=$(echo "$cfgline" | cut -d" " -f2- | sed 's:\"::g')
