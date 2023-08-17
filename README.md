@@ -31,6 +31,7 @@ sudo snap install vnstat --edge
 ```
 
 For more install options, see <https://snapcraft.io/vnstat>.
+For more details about channels and versions, see the "Channels and versions" section below.
 
 ## Post install steps
 
@@ -60,7 +61,7 @@ the `snap` command directly. For vnStat, the commands are:
 
 All the configuration options in Snap mirror the same names as in the vnStat configuration
 file but in full lower case. From vnStat's perspective, the active configuration can be
-queried with `vnstat --showconfig`. A restart of the daemon is still needed when changing
+queried with `vnstat --showconfig`. A restart of the daemon is needed after changing
 daemon related configuration options. See the [vnstat.conf man page](https://humdi.net/vnstat/man/vnstat.conf.html)
 for longer description for each option.
 
@@ -77,3 +78,24 @@ for longer description for each option.
   - <https://forum.snapcraft.io/t/support-for-man-pages/2299>
   - <https://bugs.launchpad.net/snapd/+bug/1575593>
   - <https://github.com/snapcore/snapd/pull/8079>
+
+## Channels and versions
+
+vnStat is published on two snap channels:
+
+- `latest/stable` - tracks the latest [vnStat release](https://github.com/vergoh/vnstat/releases)
+  - `snap` defaults to using this channel when none is specified
+  - the version string consists of two `-` separated fields:
+    1. vnStat release version
+    2. commit identifier for current repository
+- `latest/edge` - tracks the latest commit in the [vnStat GitHub repository](https://github.com/vergoh/vnstat)
+  - can be selected using the `--edge` parameter
+  - the version string consists of four `-` separated fields:
+    1. vnStat release version
+    2. number of commits after the above version
+    3. commit identifier of the latest change
+    4. commit identifier for current repository
+
+In addition, with `snap list` command, a revision is visible. This revision is a unique incremental
+identifier for the build being used. It will be incremented for any `vnstat` snap builds regardless of
+channel or architecture.
