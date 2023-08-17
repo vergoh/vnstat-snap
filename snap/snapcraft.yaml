@@ -6,6 +6,7 @@ icon: snap/local/vnstat_icon.png
 website: https://humdi.net/vnstat/
 source-code: https://github.com/vergoh/vnstat
 issues: https://github.com/vergoh/vnstat-snap/issues
+contact: https://github.com/vergoh/vnstat-snap/issues
 license: GPL-2.0
 summary: Console-based network traffic monitor
 description: |
@@ -61,7 +62,7 @@ parts:
       - --sysconfdir=/etc
     override-pull: |
       craftctl default
-      craftctl set version="$(git describe --abbrev=1 --tags --long)"
+      craftctl set version="$(git describe --abbrev=1 --tags --long | sed 's:^v::g')"
     build-packages:
       - pkg-config
       - libsqlite3-dev

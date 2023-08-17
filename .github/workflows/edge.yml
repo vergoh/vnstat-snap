@@ -40,7 +40,7 @@ jobs:
         shell: bash
         run: |
           git checkout -b edge
-          sed -i -e "s:--tags --long):--tags --long)-$SNAP_COMMIT:g" snap/snapcraft.yaml
+          sed -i -e "s/::g')\"\$/::g')-$SNAP_COMMIT\"/g" snap/snapcraft.yaml
           echo "# timestamp: $(date +"%F %X")" >>snap/snapcraft.yaml
           git diff
           git commit -a -m "GitHub $GITHUB_REPOSITORY $GITHUB_WORKFLOW #$GITHUB_RUN_NUMBER"
