@@ -67,9 +67,11 @@ for longer description for each option.
 
 ## Known limitations
 
+- network-observe needs to be connected
 - `vnstati` command is `vnstat.image` instead
 - `vnstat.image` can't write files due to snap sandbox restriction
   - use `-o - >file.png` as a workaround
+- interface specific MaxBW settings aren't applied
 - man pages aren't available, use these these instead:
   - <https://humdi.net/vnstat/man/vnstat.html>
   - <https://humdi.net/vnstat/man/vnstati.html>

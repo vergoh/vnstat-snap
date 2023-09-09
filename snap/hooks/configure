@@ -6,16 +6,17 @@ LOCKED="^DatabaseDir |^DaemonGroup |^DaemonUser |^LogFile |^PidFile "
 
 # new install, no existing configuration -> generate it and populate also key/values in snap
 if [ ! -d "$CFG_DIR" ] || [ ! -f "$CFG_FILE" ]; then
+    # shellcheck disable=SC2174
     mkdir -m 0755 -p "$CFG_DIR"
     touch "$CFG_FILE"
     chmod 644 "$CFG_FILE"
-    vnstat --showconfig | sed -e 's:^;::g' -e 's:  *: :g' | grep -E '^[A-Za-z]' | grep -v -E "$LOCKED" | sort | while read cfgline
+    vnstat --showconfig | sed -e 's:^;::g' -e 's:  *: :g' | grep -E '^[A-Za-z]' | grep -v -E "$LOCKED" | sort | while read -r cfgline
     do
         native_key=$(echo "$cfgline" | cut -d" " -f1)
-        snap_key=$(echo "$native_key" | tr A-Z a-z)
+        snap_key=$(echo "$native_key" | tr '[:upper:]' '[:lower:]')
         value=$(echo "$cfgline" | cut -d" " -f2- | sed 's:\"::g')
         echo "$native_key \"$value\"" >>"$CFG_FILE"
-        snapctl set $snap_key="$value"
+        snapctl set "$snap_key"="$value"
     done
 
 # configuration exists so this is either snap refresh / update or user using snap set/unset,
@@ -28,14 +29,14 @@ else
     # --config paramter shouldn't be used here, that way the native_value variable gets the default value
     # which can then be restored to snap if the user used "snap unset" for a certain value, otherwise
     # the previously used value would get restored and "snap unset" wouldn't have any effect
-    vnstat --showconfig | sed -e 's:^;::g' -e 's:  *: :g' | grep -E '^[A-Za-z]' | grep -v -E "$LOCKED" | sort | while read cfgline
+    vnstat --showconfig | sed -e 's:^;::g' -e 's:  *: :g' | grep -E '^[A-Za-z]' | grep -v -E "$LOCKED" | sort | while read -r cfgline
     do
         native_key=$(echo "$cfgline" | cut -d" " -f1)
         native_value=$(echo "$cfgline" | cut -d" " -f2- | sed 's:\"::g')
-        snap_key=$(echo "$native_key" | tr A-Z a-z)
-        snap_value=$(snapctl get $snap_key)
+        snap_key=$(echo "$native_key" | tr '[:upper:]' '[:lower:]')
+        snap_value=$(snapctl get "$snap_key")
         if [ -z "$snap_value" ]; then
-            snapctl set $snap_key="$native_value"
+            snapctl set "$snap_key"="$native_value"
             snap_value="$native_value"
         fi
         echo "$native_key \"$snap_value\"" >>"$CFG_NEW"
