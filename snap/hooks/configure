@@ -26,7 +26,7 @@ if [ ! -d "$CFG_DIR" ] || [ ! -f "$CFG_FILE" ]; then
 else
     CFG_NEW="$CFG_DIR/config_new"
     rm -f "$CFG_NEW"
-    # --config paramter shouldn't be used here, that way the native_value variable gets the default value
+    # --config parameter shouldn't be used here, that way the native_value variable gets the default value
     # which can then be restored to snap if the user used "snap unset" for a certain value, otherwise
     # the previously used value would get restored and "snap unset" wouldn't have any effect
     vnstat --showconfig | sed -e 's:^;::g' -e 's:  *: :g' | grep -E '^[A-Za-z]' | grep -v -E "$LOCKED" | sort | while read -r cfgline
