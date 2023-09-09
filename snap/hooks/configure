@@ -41,6 +41,22 @@ else
         fi
         echo "$native_key \"$snap_value\"" >>"$CFG_NEW"
     done
+
+    # handle interface specific MaxBW entries, snapctl doesn't support showing all entries
+    # so existence of entries needs to be tested one by one using known interfaces
+    # ref. https://bugs.launchpad.net/snapd/+bug/1814876
+    iflist=$(vnstat --iflist 1)
+    dbiflist=$(vnstat --dbiflist 1)
+    interfaces=$(printf "%s\n%s\n" "$iflist" "$dbiflist" | sort | uniq)
+
+    for interface in $interfaces
+    do
+        snap_value=$(snapctl get "maxbw${interface}" 2>/dev/null)
+        if [ -n "$snap_value" ]; then
+            echo "MaxBW${interface} \"$snap_value\"" >>"$CFG_NEW"
+        fi
+    done
+
     if ! diff -Naur "$CFG_FILE" "$CFG_NEW"; then
         cat "$CFG_NEW" >"$CFG_FILE"
     fi
