@@ -47,10 +47,6 @@ apps:
     stop-mode: sigterm
     stop-timeout: 10s
 
-layout:
-  /var/lib/vnstat:
-    bind: $SNAP_DATA/var/lib/vnstat
-
 parts:
   vnstat:
     plugin: autotools

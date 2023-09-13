@@ -1,5 +1,6 @@
 #!/bin/sh
 
+DBDIR="$SNAP_DATA/var/lib/vnstat"
 CFG_DIR="$SNAP_DATA/options"
 CFG_FILE="$CFG_DIR/config"
 LOCKED="^DatabaseDir |^DaemonGroup |^DaemonUser |^LogFile |^PidFile "
@@ -10,6 +11,7 @@ if [ ! -d "$CFG_DIR" ] || [ ! -f "$CFG_FILE" ]; then
     mkdir -m 0755 -p "$CFG_DIR"
     touch "$CFG_FILE"
     chmod 644 "$CFG_FILE"
+    echo "DatabaseDir \"$DBDIR\"" >"$CFG_FILE"
     vnstat --showconfig | sed -e 's:^;::g' -e 's:  *: :g' | grep -E '^[A-Za-z]' | grep -v -E "$LOCKED" | sort | while read -r cfgline
     do
         native_key=$(echo "$cfgline" | cut -d" " -f1)
@@ -26,6 +28,7 @@ if [ ! -d "$CFG_DIR" ] || [ ! -f "$CFG_FILE" ]; then
 else
     CFG_NEW="$CFG_DIR/config_new"
     rm -f "$CFG_NEW"
+    echo "DatabaseDir \"$DBDIR\"" >"$CFG_NEW"
     # --config parameter shouldn't be used here, that way the native_value variable gets the default value
     # which can then be restored to snap if the user used "snap unset" for a certain value, otherwise
     # the previously used value would get restored and "snap unset" wouldn't have any effect
@@ -45,8 +48,8 @@ else
     # handle interface specific MaxBW entries, snapctl doesn't support showing all entries
     # so existence of entries needs to be tested one by one using known interfaces
     # ref. https://bugs.launchpad.net/snapd/+bug/1814876
-    iflist=$(vnstat --iflist 1)
-    dbiflist=$(vnstat --dbiflist 1)
+    iflist=$(vnstat --dbdir "$DBDIR" --iflist 1)
+    dbiflist=$(vnstat --dbdir "$DBDIR" --dbiflist 1)
     interfaces=$(printf "%s\n%s\n" "$iflist" "$dbiflist" | sort | uniq)
 
     for interface in $interfaces
