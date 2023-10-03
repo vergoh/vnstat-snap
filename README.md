@@ -30,24 +30,11 @@ Or alternatively using development channel:
 sudo snap install vnstat --edge
 ```
 
+vnStat will automatically start monitoring all available interfaces once installed. Statistics
+can be viewed using the `vnstat` command (`sudo` not required) after around 5 minutes.
+
 For more install options, see <https://snapcraft.io/vnstat>.
 For more details about channels and versions, see the "Channels and versions" section below.
-
-## Post install steps
-
-The following needs to be executed once to provide the vnStat daemon access
-to network interface speed details:
-
-```sh
-sudo snap connect vnstat:network-observe
-sudo snap restart vnstat
-```
-
-Finally verify that the daemon did (re)start without issues:
-
-```sh
-sudo snap logs vnstat
-```
 
 ## Configurability
 
@@ -67,8 +54,7 @@ for longer description for each option.
 
 ## Known limitations
 
-- network-observe needs to be connected
-- `vnstati` command is `vnstat.image` instead
+- `vnstati` (image output) command is available as `vnstat.image`
 - `vnstat.image` can't write files due to snap sandbox restriction
   - use `-o - >file.png` as a workaround
 - man pages aren't available, use these these instead:

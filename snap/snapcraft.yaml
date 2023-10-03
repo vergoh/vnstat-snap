@@ -15,10 +15,17 @@ description: |
   means that vnStat won't actually be sniffing any traffic and also ensures
   light use of system resources regardless of network traffic rate.
 
-  Once installed, this snap needs to be connected for full functionality:
+  Features:
 
-     sudo snap connect vnstat:network-observe
-     sudo snap restart vnstat
+  - gathered statistics persists through system reboots
+  - can monitor multiple interfaces at the same time
+  - several output options
+    - summary, 5 minute, hourly, daily, monthly, yearly, top days
+    - png image output with multiple layouts
+  - data retention duration is fully user configurable on the fly
+  - months can be configured to follow billing period
+  - light, minimal resource usage
+  - same low cpu usage regardless of traffic
 
   For more information see https://github.com/vergoh/vnstat-snap
 
@@ -38,7 +45,7 @@ apps:
     plugs: [network-observe]
   image: # results in vnstat.image
     command: usr/bin/vnstati --config $SNAP_DATA/options/config
-  daemon: # results in vnstat.daemon
+  daemon: # not exposed to users
     command: usr/sbin/vnstatd --config $SNAP_DATA/options/config -n
     daemon: simple
     plugs: [network-observe]
