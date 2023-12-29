@@ -48,15 +48,17 @@ the `snap` command directly. For vnStat, the commands are:
 
 All the configuration options in Snap mirror the same names as in the vnStat configuration
 file but in full lower case. From vnStat's perspective, the active configuration can be
-queried with `vnstat --showconfig`. A restart of the daemon is needed after changing
-daemon related configuration options. See the [vnstat.conf man page](https://humdi.net/vnstat/man/vnstat.conf.html)
-for longer description for each option.
+queried with `vnstat --showconfig`. A restart of the daemon (`sudo snap restart vnstat`)
+is needed after changing daemon related configuration options. See the
+[vnstat.conf man page](https://humdi.net/vnstat/man/vnstat.conf.html) for longer descriptions
+of each option.
 
 ## Known limitations
 
 - `vnstati` (image output) command is available as `vnstat.image`
 - `vnstat.image` can't write files due to snap sandbox restriction
   - use `-o - >file.png` as a workaround
+- `sudo snap restart vnstat` is required after changing daemon related configuration options
 - man pages aren't available, use these these instead:
   - <https://humdi.net/vnstat/man/vnstat.html>
   - <https://humdi.net/vnstat/man/vnstati.html>
@@ -75,7 +77,7 @@ vnStat is published on two snap channels:
   - the version string consists of two `-` separated fields:
     1. vnStat release version
     2. commit identifier for current repository
-- `latest/edge` - tracks the latest commit in the [vnStat GitHub repository](https://github.com/vergoh/vnstat)
+- `latest/edge` - tracks the latest all tests passing commit in the [vnStat GitHub repository](https://github.com/vergoh/vnstat)
   - can be selected using the `--edge` parameter
   - the version string consists of four `-` separated fields:
     1. vnStat release version
